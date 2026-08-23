@@ -9,8 +9,8 @@ export const siteConfig = {
   phone: "+977 980-000-0000",
   nav: [
     { label: "Buy", href: "/#properties" },
-    { label: "Houses", href: "/?type=house#properties" },
-    { label: "Land", href: "/?type=land#properties" },
+    { label: "Houses", href: "/?type=house#property-filters" },
+    { label: "Land", href: "/?type=land#property-filters" },
     { label: "Sell", href: "/#sell" },
   ],
 } as const;

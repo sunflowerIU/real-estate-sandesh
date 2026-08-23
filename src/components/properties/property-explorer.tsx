@@ -123,7 +123,7 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
           </div>
         </div>
 
-        <div className="property-discovery">
+        <div className="property-discovery" id="property-filters">
           <div className="discovery-topline">
             <div>
               <ListFilter aria-hidden="true" />
