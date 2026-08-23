@@ -12,6 +12,10 @@
     "location": { "locality": "Golfutar", "municipality": "Budhanilkantha", "district": "Kathmandu", "province": "Bagmati" },
     "area": { "system": "hill", "display": "5 aana 2 paisa", "sqFt": 1883, "aana": 5, "paisa": 2 },
     "image": "/house/budhanilkantha-home.webp",
+    "media": [
+      { "type": "image", "src": "/house/budhanilkantha-home.webp", "alt": "Front exterior of the Budhanilkantha family home" },
+      { "type": "image", "src": "/house/hero-kathmandu.webp", "alt": "Hillside view of a contemporary Kathmandu Valley home" }
+    ],
     "featured": true,
     "verified": true,
     "postedAt": "2026-08-18",
@@ -38,6 +42,10 @@
     "location": { "locality": "Bhaisepati", "municipality": "Lalitpur Metropolitan", "district": "Lalitpur", "province": "Bagmati" },
     "area": { "system": "hill", "display": "6 aana 2 paisa", "sqFt": 2225, "aana": 6, "paisa": 2 },
     "image": "/house/hero-kathmandu.webp",
+    "media": [
+      { "type": "image", "src": "/house/hero-kathmandu.webp", "alt": "Sunset view of the Bhaisepati villa" },
+      { "type": "image", "src": "/house/budhanilkantha-home.webp", "alt": "Contemporary Nepal residence exterior" }
+    ],
     "featured": true,
     "verified": true,
     "postedAt": "2026-08-16",
@@ -116,6 +124,10 @@
     "location": { "locality": "Lamatar", "municipality": "Mahalaxmi", "district": "Lalitpur", "province": "Bagmati" },
     "area": { "system": "hill", "display": "4 aana", "sqFt": 1369, "aana": 4 },
     "image": "/land/lamatar-plot.webp",
+    "media": [
+      { "type": "image", "src": "/land/lamatar-plot.webp", "alt": "Residential land parcel in Lamatar" },
+      { "type": "image", "src": "/land/chitwan-plot.webp", "alt": "Wide view of a connected residential plot" }
+    ],
     "featured": true,
     "verified": true,
     "postedAt": "2026-08-19",
@@ -158,6 +170,10 @@
     "location": { "locality": "Yagnyapuri", "municipality": "Bharatpur Metropolitan", "district": "Chitwan", "province": "Bagmati" },
     "area": { "system": "terai", "display": "10 dhur", "sqFt": 1823, "dhur": 10 },
     "image": "/land/chitwan-plot.webp",
+    "media": [
+      { "type": "image", "src": "/land/chitwan-plot.webp", "alt": "Prime residential plot near Bharatpur" },
+      { "type": "image", "src": "/land/lamatar-plot.webp", "alt": "Open residential land with hill views" }
+    ],
     "featured": true,
     "verified": true,
     "postedAt": "2026-08-17",

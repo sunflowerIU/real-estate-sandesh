@@ -21,6 +21,13 @@ export interface PropertyLocation {
   province: string;
 }
 
+export interface PropertyMedia {
+  type: "image" | "video";
+  src: string;
+  alt?: string;
+  poster?: string;
+}
+
 export interface Property {
   id: string;
   slug: string;
@@ -34,6 +41,7 @@ export interface Property {
   location: PropertyLocation;
   area: PropertyArea;
   image: string;
+  media?: PropertyMedia[];
   featured: boolean;
   verified: boolean;
   postedAt: string;

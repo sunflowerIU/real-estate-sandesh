@@ -29,11 +29,17 @@ export function SiteHeader() {
         </nav>
         <div className="header-actions">
           <Link className="button button-primary header-cta" href="/#sell">
-            List your property
+            आफ्नो सम्पति बेच्नुहोस्
           </Link>
           <Sheet>
             <SheetTrigger
-              render={<Button className="mobile-menu-button" variant="outline" size="icon-lg" />}
+              render={
+                <Button
+                  className="mobile-menu-button"
+                  variant="outline"
+                  size="icon-lg"
+                />
+              }
             >
               <Menu aria-hidden="true" />
               <span className="sr-only">Open navigation</span>
@@ -41,17 +47,29 @@ export function SiteHeader() {
             <SheetContent className="mobile-sheet">
               <SheetHeader>
                 <SheetTitle>Explore GharJagga</SheetTitle>
-                <SheetDescription>Find or list property anywhere in Nepal.</SheetDescription>
+                <SheetDescription>
+                  Find or list property anywhere in Nepal.
+                </SheetDescription>
               </SheetHeader>
               <nav className="mobile-nav" aria-label="Mobile navigation">
                 {siteConfig.nav.map((item) => (
-                  <SheetClose key={item.label} render={<Link href={item.href} />}>
+                  <SheetClose
+                    key={item.label}
+                    render={<Link href={item.href} />}
+                  >
                     {item.label}
                   </SheetClose>
                 ))}
               </nav>
-              <SheetClose render={<Link className="button button-primary mobile-sheet-cta" href="/#sell" />}>
-                List your property
+              <SheetClose
+                render={
+                  <Link
+                    className="button button-primary mobile-sheet-cta"
+                    href="/#sell"
+                  />
+                }
+              >
+                सम्पत्ति सूचीबद्ध गर्नुहोस्
               </SheetClose>
             </SheetContent>
           </Sheet>

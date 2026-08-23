@@ -14,7 +14,7 @@ export function Hero() {
       <Image
         className="hero-image"
         src="/house/hero-kathmandu.webp"
-        alt="Contemporary home overlooking Kathmandu Valley at sunrise"
+        alt="सूर्योदयको समयमा काठमाडौं उपत्यका हेर्दै गरेको आधुनिक घर"
         fill
         priority
         sizes="100vw"
@@ -23,17 +23,28 @@ export function Hero() {
       <div className="hero-orbit hero-orbit-one" aria-hidden="true" />
       <div className="hero-orbit hero-orbit-two" aria-hidden="true" />
       <div className="site-shell hero-content">
-        <motion.div initial={initial} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <p className="eyebrow eyebrow-light"><MapPin aria-hidden="true" /> Property, rooted in Nepal</p>
-          <h1 id="hero-title">Find a place that feels <em>meant for you.</em></h1>
+        <motion.div
+          initial={initial}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="eyebrow eyebrow-light">
+            <MapPin aria-hidden="true" /> नेपालभरिका घर-जग्गा
+          </p>
+          <h1 id="hero-title">
+            तपाईंका लागि <em>सही घर जग्गा खोज्नुहोस्।</em>
+          </h1>
           <p className="hero-copy">
-            Verified homes and land, explained in the measurements you know—with local context at every step.
+            प्रमाणित घर र जग्गा, तपाईंले बुझ्ने स्थानीय मापनमा—हरेक चरणमा उपयोगी
+            जानकारीसहित।
           </p>
           <div className="hero-actions">
             <Link className="button button-accent" href="#properties">
-              Explore properties <ArrowDown aria-hidden="true" />
+              सम्पत्ति हेर्नुहोस् <ArrowDown aria-hidden="true" />
             </Link>
-            <Link className="button button-ghost-light" href="#sell">Sell with us</Link>
+            <Link className="button button-ghost-light" href="#sell">
+              हामीसँग बेच्नुहोस्
+            </Link>
           </div>
         </motion.div>
         <motion.aside
@@ -42,20 +53,28 @@ export function Hero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <span className="hero-fact-icon"><Home aria-hidden="true" /></span>
+          <span className="hero-fact-icon">
+            <Home aria-hidden="true" />
+          </span>
           <div>
-            <small>Featured in Bhaisepati</small>
-            <strong>6 aana 2 paisa</strong>
-            <span><BadgeCheck aria-hidden="true" /> Documents verified</span>
+            <small>भैँसेपाटीको विशेष सम्पत्ति</small>
+            <strong>६ आना २ पैसा</strong>
+            <span>
+              <BadgeCheck aria-hidden="true" /> कागजात प्रमाणित
+            </span>
           </div>
         </motion.aside>
       </div>
-      <div className="hero-marquee" aria-label="Property coverage">
-        <span>Kathmandu</span><i />
-        <span>Lalitpur</span><i />
-        <span>Pokhara</span><i />
-        <span>Chitwan</span><i />
-        <span>Biratnagar</span>
+      <div className="hero-marquee" aria-label="सम्पत्ति उपलब्ध क्षेत्रहरू">
+        <span>काठमाडौं</span>
+        <i />
+        <span>ललितपुर</span>
+        <i />
+        <span>पोखरा</span>
+        <i />
+        <span>चितवन</span>
+        <i />
+        <span>विराटनगर</span>
       </div>
     </section>
   );

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { PropertyExplorer } from "@/components/properties/property-explorer";
 import { Hero } from "@/components/sections/hero";
 import { SellSection } from "@/components/sections/sell-section";
@@ -22,7 +23,9 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <Hero />
       <TrustStrip />
-      <PropertyExplorer properties={properties} districts={districts} />
+      <Suspense fallback={<div className="property-loading" id="properties">सम्पत्ति लोड हुँदैछ…</div>}>
+        <PropertyExplorer properties={properties} districts={districts} />
+      </Suspense>
       <UnitGuide />
       <SellSection />
     </>
