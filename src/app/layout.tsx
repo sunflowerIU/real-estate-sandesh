@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Lora, Noto_Sans_Devanagari, Noto_Serif_Devanagari } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { EntryDoor } from "@/components/motion/entry-door";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -25,8 +26,16 @@ export const viewport: Viewport = { themeColor: "#153b2f", colorScheme: "light" 
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ne-NP" className={`${sans.variable} ${serif.variable} ${nepaliSans.variable} ${nepaliSerif.variable}`}>
+    <html lang="ne-NP" suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${nepaliSans.variable} ${nepaliSerif.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem("gharjagga-entry-door-seen-v3")==="true"||matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("entry-door-seen")}}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
+        <EntryDoor />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <SiteHeader />
         <main id="main-content">{children}</main>
