@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-const ENTRY_KEY = "gharjagga-entry-door-seen-v3";
+const ENTRY_KEY = "gharjagga-entry-door-seen-v4";
 
 type DoorPhase = "closed" | "opening" | "revealing";
 
@@ -54,9 +54,12 @@ export function EntryDoor() {
       <div className="door-light" />
       <div className="door-panel door-panel-left">
         <div className="door-frame">
+          <span className="door-arch" />
+          <span className="door-rosette" />
           <span className="door-carving door-carving-top" />
           <span className="door-carving door-carving-middle" />
           <span className="door-carving door-carving-bottom" />
+          <span className="door-carved-band" />
         </div>
         <span className="door-handle" />
       </div>
@@ -67,9 +70,12 @@ export function EntryDoor() {
         }}
       >
         <div className="door-frame">
+          <span className="door-arch" />
+          <span className="door-rosette" />
           <span className="door-carving door-carving-top" />
           <span className="door-carving door-carving-middle" />
           <span className="door-carving door-carving-bottom" />
+          <span className="door-carved-band" />
         </div>
         <span className="door-handle" />
       </div>

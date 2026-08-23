@@ -98,17 +98,25 @@ svg { stroke-width: 1.75; }
 .entry-door-seen .entry-door { display: none !important; }
 .entry-door::after { content: ""; position: absolute; z-index: 5; inset: 0; border: clamp(.5rem, 1.5vw, 1.2rem) solid #0a241d; box-shadow: inset 0 0 0 2px rgba(231,139,78,.35), inset 0 0 70px rgba(0,0,0,.55); pointer-events: none; transition: opacity .65s ease 1.65s; }
 .door-light { position: absolute; z-index: -1; inset: 0; background: radial-gradient(circle at 50% 48%, rgba(244,180,125,.95), rgba(231,139,78,.45) 20%, rgba(23,69,54,.2) 45%, #081f19 72%); transform: scale(.7); opacity: 0; transition: transform 1.85s cubic-bezier(.22,1,.36,1), opacity .9s ease; }
-.door-panel { position: relative; z-index: 2; overflow: hidden; height: 100%; transform-style: preserve-3d; backface-visibility: hidden; background-color: #713a24; background-image: linear-gradient(90deg, rgba(255,255,255,.06), transparent 9%, rgba(35,12,7,.14) 10%, transparent 11%, transparent 24%, rgba(255,255,255,.035) 25%, transparent 27%, rgba(30,8,4,.13) 50%, transparent 52%, rgba(255,255,255,.04) 75%, transparent 78%), linear-gradient(180deg, #8c4b2d, #65301f 55%, #482116); box-shadow: inset 0 0 45px rgba(28,8,3,.42); transition: transform 2.4s cubic-bezier(.72,0,.18,1), filter 1.9s ease; will-change: transform; }
+.door-panel { position: relative; z-index: 2; overflow: hidden; height: 100%; transform-style: preserve-3d; backface-visibility: hidden; background-color: #713a24; background-image: radial-gradient(circle at 8% 12%, rgba(222,157,95,.42) 0 .22rem, #512318 .25rem .42rem, transparent .45rem), radial-gradient(circle at 92% 12%, rgba(222,157,95,.42) 0 .22rem, #512318 .25rem .42rem, transparent .45rem), linear-gradient(90deg, rgba(255,255,255,.06), transparent 9%, rgba(35,12,7,.14) 10%, transparent 11%, transparent 24%, rgba(255,255,255,.035) 25%, transparent 27%, rgba(30,8,4,.13) 50%, transparent 52%, rgba(255,255,255,.04) 75%, transparent 78%), linear-gradient(180deg, #945333, #693321 55%, #482116); background-size: auto, auto, auto, auto; box-shadow: inset 0 0 45px rgba(28,8,3,.42); transition: transform 2.4s cubic-bezier(.72,0,.18,1), filter 1.9s ease; will-change: transform; }
 .door-panel-left { transform-origin: left center; border-right: 1px solid rgba(20,7,3,.9); }
 .door-panel-right { transform-origin: right center; border-left: 1px solid rgba(232,163,106,.22); }
 .door-panel::before { content: ""; position: absolute; inset: 0; opacity: .34; background: repeating-linear-gradient(90deg, transparent 0 13%, rgba(34,10,5,.2) 13.2% 13.8%, rgba(238,168,112,.12) 14% 14.5%); }
-.door-frame { position: absolute; inset: clamp(1.2rem, 4vw, 3.5rem); border: clamp(.55rem, 1.4vw, 1rem) solid #3a180f; border-radius: 45% 45% .4rem .4rem / 16% 16% .4rem .4rem; box-shadow: inset 0 0 0 2px rgba(236,164,105,.24), 0 0 0 2px rgba(28,8,3,.35), inset 0 0 55px rgba(25,7,3,.32); }
-.door-frame::before { content: ""; position: absolute; inset: clamp(.55rem, 1.4vw, 1rem); border: 2px solid rgba(235,161,101,.28); border-radius: inherit; }
-.door-carving { position: absolute; left: 50%; display: block; border: 2px solid rgba(237,169,111,.31); box-shadow: inset 0 0 0 5px rgba(46,16,9,.17), 0 5px 12px rgba(20,5,2,.22); transform: translateX(-50%) rotate(45deg); }
-.door-carving::after { content: ""; position: absolute; inset: 22%; border: 1px solid rgba(241,178,126,.34); border-radius: 50%; }
+.door-frame { position: absolute; inset: clamp(1.2rem, 4vw, 3.5rem); overflow: hidden; border: clamp(.55rem, 1.4vw, 1rem) solid #35150d; border-radius: 48% 48% .4rem .4rem / 17% 17% .4rem .4rem; background: radial-gradient(ellipse at 50% 0%, rgba(228,151,90,.12), transparent 34%), repeating-linear-gradient(0deg, transparent 0 12%, rgba(42,12,6,.12) 12.2% 12.8%); box-shadow: inset 0 0 0 2px rgba(236,164,105,.25), 0 0 0 2px rgba(28,8,3,.42), inset 0 0 60px rgba(25,7,3,.34), 0 8px 28px rgba(20,5,2,.28); }
+.door-frame::before { content: ""; position: absolute; z-index: 1; inset: clamp(.55rem, 1.4vw, 1rem); border: 2px solid rgba(235,161,101,.3); border-radius: inherit; box-shadow: inset 0 0 0 5px rgba(49,17,9,.14); }
+.door-frame::after { content: ""; position: absolute; z-index: 0; left: 9%; right: 9%; top: 3.5%; height: 17%; border-bottom: .38rem double rgba(238,162,99,.28); border-radius: 50%; background: repeating-conic-gradient(from 45deg at 50% 100%, rgba(231,147,84,.2) 0 8deg, transparent 8deg 18deg); opacity: .85; }
+.door-arch { position: absolute; z-index: 1; left: 12%; right: 12%; top: 8%; height: 29%; border: clamp(.28rem,.7vw,.5rem) double rgba(232,153,91,.38); border-bottom: 0; border-radius: 50% 50% 0 0 / 72% 72% 0 0; box-shadow: inset 0 .6rem 0 rgba(48,15,8,.16), 0 -.2rem 0 rgba(43,13,7,.22); }
+.door-arch::after { content: ""; position: absolute; left: 8%; right: 8%; bottom: -.65rem; height: .8rem; background: linear-gradient(135deg, transparent 25%, rgba(226,145,84,.4) 26% 50%, transparent 51%) 0 0 / 1.25rem .8rem repeat-x; }
+.door-rosette { position: absolute; z-index: 2; top: 12.5%; left: 50%; width: clamp(2.7rem,5.5vw,4.4rem); aspect-ratio: 1; border: 2px solid rgba(238,171,112,.43); border-radius: 50%; background: repeating-conic-gradient(from 0deg, #b96a3f 0 8deg, #5b2819 8deg 16deg); box-shadow: inset 0 0 0 .42rem rgba(58,20,11,.48), 0 .4rem .9rem rgba(20,5,2,.28); transform: translateX(-50%); }
+.door-rosette::after { content: ""; position: absolute; inset: 30%; border: 2px solid rgba(251,195,140,.56); border-radius: 50%; background: #71371f; }
+.door-carving { position: absolute; z-index: 2; left: 50%; display: block; border: 2px solid rgba(237,169,111,.34); border-radius: 50% 8% 50% 8%; background: linear-gradient(135deg, rgba(228,146,83,.13), transparent 52%); box-shadow: inset 0 0 0 5px rgba(46,16,9,.18), 0 5px 12px rgba(20,5,2,.22); transform: translateX(-50%) rotate(45deg); }
+.door-carving::before, .door-carving::after { content: ""; position: absolute; border: 1px solid rgba(241,178,126,.36); }
+.door-carving::before { inset: 14%; border-radius: 50% 8% 50% 8%; }
+.door-carving::after { inset: 34%; border-radius: 50%; background: rgba(74,27,15,.25); }
 .door-carving-top { top: 18%; width: clamp(3.5rem, 8vw, 6rem); aspect-ratio: 1; }
 .door-carving-middle { top: 47%; width: clamp(4.5rem, 10vw, 7.5rem); aspect-ratio: 1; }
 .door-carving-bottom { bottom: 9%; width: clamp(2.8rem, 6vw, 4.5rem); aspect-ratio: 1; }
+.door-carved-band { position: absolute; z-index: 1; left: 8%; right: 8%; bottom: 3.5%; height: clamp(.65rem,1.4vw,1rem); border-top: 1px solid rgba(239,169,108,.3); border-bottom: 1px solid rgba(239,169,108,.3); background: linear-gradient(135deg, transparent 25%, rgba(226,145,84,.28) 26% 50%, transparent 51%) 0 0 / 1.2rem 100% repeat-x; }
 .door-handle { position: absolute; z-index: 3; top: 51%; width: clamp(.85rem, 1.8vw, 1.2rem); height: clamp(3.2rem, 7vw, 4.8rem); border: 2px solid #e3a168; border-radius: 999px; background: linear-gradient(90deg, #9e5e31, #f0b77d 46%, #8c4e2b); box-shadow: 0 5px 18px rgba(16,4,2,.5), inset 0 0 0 2px rgba(87,41,20,.35); transform: translateY(-50%); }
 .door-panel-left .door-handle { right: clamp(1.2rem, 3vw, 2.4rem); }
 .door-panel-right .door-handle { left: clamp(1.2rem, 3vw, 2.4rem); }
@@ -122,6 +130,7 @@ svg { stroke-width: 1.75; }
 .entry-door.opening .door-welcome { opacity: 0; transform: translate(-50%,-50%) scale(.78); }
 .entry-door.opening::after { opacity: 0; }
 .entry-door.revealing { opacity: 0; transition: opacity .8s ease; }
+.entry-door.revealing .door-panel, .entry-door.revealing::after { visibility: hidden; }
 
 /* Header */
 .site-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgba(20,55,44,.08); background: rgba(248,246,239,.88); backdrop-filter: blur(18px); }

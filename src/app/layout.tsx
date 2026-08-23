@@ -30,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("gharjagga-entry-door-seen-v3")==="true"||matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("entry-door-seen")}}catch(e){}`,
+            __html: `try{if(sessionStorage.getItem("gharjagga-entry-door-seen-v4")==="true"||matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("entry-door-seen")}}catch(e){}`,
           }}
         />
       </head>
