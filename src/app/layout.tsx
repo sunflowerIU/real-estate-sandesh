@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Lora, Noto_Sans_Devanagari, Noto_Serif_Devanagari } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SkipLink } from "@/components/layout/skip-link";
 import { EntryDoor } from "@/components/motion/entry-door";
+import { LanguageProvider } from "@/components/providers/language-provider";
+import { SellPropertyDialogProvider } from "@/components/sell/sell-property-dialog";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -13,12 +16,12 @@ const nepaliSerif = Noto_Serif_Devanagari({ variable: "--font-nepali-serif", sub
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: "GharJagga Nepal | Houses & Land for Sale", template: "%s | GharJagga Nepal" },
+  title: { default: "GharJagga Kathmandu | Houses & Land for Sale", template: "%s | GharJagga Kathmandu" },
   description: siteConfig.description,
-  keywords: ["real estate Nepal", "house for sale Kathmandu", "land for sale Nepal", "ghar jagga", "property Nepal", "aana land", "kattha land"],
+  keywords: ["real estate Kathmandu", "house for sale Kathmandu", "land for sale Kathmandu", "ghar jagga Kathmandu", "property Kathmandu", "aana land Kathmandu", "Kathmandu real estate"],
   alternates: { canonical: "/" },
-  openGraph: { type: "website", locale: "en_NP", siteName: siteConfig.name, title: "GharJagga Nepal | Find a place meant for you", description: siteConfig.description, url: "/" },
-  twitter: { card: "summary_large_image", title: "GharJagga Nepal | Houses & Land for Sale", description: siteConfig.description },
+  openGraph: { type: "website", locale: "en_NP", siteName: siteConfig.name, title: "GharJagga Kathmandu | Find your place in the capital", description: siteConfig.description, url: "/" },
+  twitter: { card: "summary_large_image", title: "GharJagga Kathmandu | Houses & Land for Sale", description: siteConfig.description },
   category: "real estate",
 };
 
@@ -34,12 +37,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <EntryDoor />
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <SiteHeader />
-        <main id="main-content">{children}</main>
-        <SiteFooter />
+        <LanguageProvider>
+          <SellPropertyDialogProvider>
+            <SkipLink />
+            <SiteHeader />
+            <main id="main-content">{children}</main>
+            <SiteFooter />
+          </SellPropertyDialogProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

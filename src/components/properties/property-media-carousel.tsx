@@ -10,9 +10,10 @@ import type { PropertyMedia } from "@/types/property";
 interface PropertyMediaCarouselProps {
   media: PropertyMedia[];
   title: string;
+  copy: { gallery: string; swipe: string; previous: string; next: string; choose: string; show: string };
 }
 
-export function PropertyMediaCarousel({ media, title }: PropertyMediaCarouselProps) {
+export function PropertyMediaCarousel({ media, title, copy }: PropertyMediaCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const hasMultiple = media.length > 1;
@@ -31,7 +32,7 @@ export function PropertyMediaCarousel({ media, title }: PropertyMediaCarouselPro
   return (
     <section
       className="media-carousel"
-      aria-label={`${title} media gallery`}
+      aria-label={`${title} · ${copy.gallery}`}
       tabIndex={0}
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft") showPrevious();
@@ -75,17 +76,17 @@ export function PropertyMediaCarousel({ media, title }: PropertyMediaCarouselPro
         </AnimatePresence>
 
         <span className="media-counter">{activeIndex + 1} / {media.length}</span>
-        {hasMultiple && <span className="swipe-hint">Swipe to explore</span>}
+        {hasMultiple && <span className="swipe-hint">{copy.swipe}</span>}
         {hasMultiple && (
           <div className="carousel-controls">
-            <Button variant="secondary" size="icon-lg" onClick={showPrevious} aria-label="Previous photo or video"><ChevronLeft /></Button>
-            <Button variant="secondary" size="icon-lg" onClick={showNext} aria-label="Next photo or video"><ChevronRight /></Button>
+            <Button variant="secondary" size="icon-lg" onClick={showPrevious} aria-label={copy.previous}><ChevronLeft /></Button>
+            <Button variant="secondary" size="icon-lg" onClick={showNext} aria-label={copy.next}><ChevronRight /></Button>
           </div>
         )}
       </div>
 
       {hasMultiple && (
-        <div className="media-thumbnails" aria-label="Choose gallery item">
+        <div className="media-thumbnails" aria-label={copy.choose}>
           {media.map((item, index) => (
             <button
               key={`${item.src}-${index}`}
@@ -94,7 +95,7 @@ export function PropertyMediaCarousel({ media, title }: PropertyMediaCarouselPro
                 setDirection(index > activeIndex ? 1 : -1);
                 setActiveIndex(index);
               }}
-              aria-label={`Show ${item.type} ${index + 1}`}
+              aria-label={`${copy.show} ${item.type} ${index + 1}`}
               aria-current={activeIndex === index ? "true" : undefined}
             >
               {item.type === "image" ? (

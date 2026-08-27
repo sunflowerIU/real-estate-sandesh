@@ -22,15 +22,15 @@ export const siteConfig = {
   name: "GharJagga",
   nepaliName: "घरजग्गा",
   description:
-    "Verified houses and land for sale across Nepal, with local area units and human guidance.",
+    "Verified houses and land for sale across Kathmandu, with local area units and human guidance.",
   url: resolveSiteUrl(),
   salesEmail:
     process.env.NEXT_PUBLIC_SALES_EMAIL ?? "property@gharjagga.example.com",
   phone: "+977 980-000-0000",
   nav: [
-    { label: "Buy", href: "/#properties" },
-    { label: "Houses", href: "/?type=house#property-filters" },
-    { label: "Land", href: "/?type=land#property-filters" },
-    { label: "Sell", href: "/#sell" },
+    { key: "buy", href: "/#properties" },
+    { key: "houses", href: "/?type=house#property-filters" },
+    { key: "land", href: "/?type=land#property-filters" },
+    { key: "sell", href: "/#sell" },
   ],
 } as const;

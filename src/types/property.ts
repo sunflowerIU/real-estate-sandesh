@@ -28,6 +28,13 @@ export interface PropertyMedia {
   poster?: string;
 }
 
+export interface PropertyTranslation {
+  title: string;
+  excerpt: string;
+  description: string;
+  amenities: string[];
+}
+
 export interface Property {
   id: string;
   slug: string;
@@ -54,12 +61,13 @@ export interface Property {
   parking?: number;
   furnishing?: "furnished" | "semi-furnished" | "unfurnished";
   amenities: string[];
+  translations?: Partial<Record<"ne" | "en", PropertyTranslation>>;
 }
 
 export interface PropertyFilters {
   query: string;
   type: "all" | PropertyType;
-  district: "all" | string;
+  locality: "all" | string;
   maxPrice: number;
   areaSystem: "all" | AreaSystem;
 }

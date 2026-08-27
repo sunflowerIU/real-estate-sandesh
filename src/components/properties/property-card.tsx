@@ -5,66 +5,49 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Bath, BedDouble, BadgeCheck, CarFront, MapPin, Ruler } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage, useSiteCopy } from "@/components/providers/language-provider";
+import { formatLocalizedNumber, formatPropertyPrice } from "@/lib/format";
+import { getLocalizedProperty, localizeArea, localizePlace } from "@/lib/property-localization";
 import type { Property } from "@/types/property";
 
 interface PropertyCardProps {
   property: Property;
 }
 
-const districtLabels: Record<string, string> = {
-  Kathmandu: "काठमाडौं",
-  Lalitpur: "ललितपुर",
-  Chitwan: "चितवन",
-  Sunsari: "सुनसरी",
-  Kaski: "कास्की",
-  Morang: "मोरङ",
-};
-
-function toNepaliDigits(value: string | number) {
-  return String(value).replace(/[0-9]/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
-}
-
-function localizeArea(value: string) {
-  return toNepaliDigits(value)
-    .replace(/ropani/gi, "रोपनी")
-    .replace(/aana/gi, "आना")
-    .replace(/paisa/gi, "पैसा")
-    .replace(/daam/gi, "दाम")
-    .replace(/bigha/gi, "बिघा")
-    .replace(/kattha/gi, "कट्ठा")
-    .replace(/dhur/gi, "धुर");
-}
-
 function PropertyCardComponent({ property }: PropertyCardProps) {
+  const { language } = useLanguage();
+  const copy = useSiteCopy().card;
+  const typeCopy = useSiteCopy().explorer;
+  const localized = getLocalizedProperty(property, language);
   return (
     <article className="property-card">
-      <Link className="property-card-link" href={`/properties/${property.slug}`} aria-label={`${property.title} हेर्नुहोस्`}>
+      <Link className="property-card-link" href={`/properties/${property.slug}`} aria-label={`${localized.title} ${copy.view}`}>
         <div className="property-media">
           <Image
             src={property.image}
-            alt={property.title}
+            alt={localized.title}
             fill
             sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw"
           />
           <div className="property-badges">
-            <Badge className="listing-badge">{property.type === "house" ? "घर" : "जग्गा"}</Badge>
-            {property.verified && <Badge className="verified-badge"><BadgeCheck /> प्रमाणित</Badge>}
+            <Badge className="listing-badge">{property.type === "house" ? typeCopy.house : typeCopy.land}</Badge>
+            {property.verified && <Badge className="verified-badge"><BadgeCheck /> {copy.verified}</Badge>}
           </div>
           <span className="card-arrow"><ArrowUpRight aria-hidden="true" /></span>
         </div>
         <div className="property-body">
-          <div className="property-location"><MapPin aria-hidden="true" /> {property.location.locality}, {districtLabels[property.location.district] ?? property.location.district}</div>
-          <h3>{property.title}</h3>
-          <p>{property.excerpt}</p>
+          <div className="property-location"><MapPin aria-hidden="true" /> {localizePlace(property.location.locality, language)}, {localizePlace(property.location.district, language)}</div>
+          <h3>{localized.title}</h3>
+          <p>{localized.excerpt}</p>
           <div className="property-specs">
-            <span><Ruler aria-hidden="true" /> {localizeArea(property.area.display)}</span>
-            {property.bedrooms && <span><BedDouble aria-hidden="true" /> {toNepaliDigits(property.bedrooms)} बेडरुम</span>}
-            {property.bathrooms && <span><Bath aria-hidden="true" /> {toNepaliDigits(property.bathrooms)} बाथरुम</span>}
-            {property.parking && <span><CarFront aria-hidden="true" /> {toNepaliDigits(property.parking)} पार्किङ</span>}
+            <span><Ruler aria-hidden="true" /> {localizeArea(property.area.display, language)}</span>
+            {property.bedrooms && <span><BedDouble aria-hidden="true" /> {formatLocalizedNumber(property.bedrooms, language)} {copy.bedrooms}</span>}
+            {property.bathrooms && <span><Bath aria-hidden="true" /> {formatLocalizedNumber(property.bathrooms, language)} {copy.bathrooms}</span>}
+            {property.parking && <span><CarFront aria-hidden="true" /> {formatLocalizedNumber(property.parking, language)} {copy.parking}</span>}
           </div>
           <div className="property-price-row">
-            <div><strong>{toNepaliDigits(property.priceLabel.replace("Rs.", "रु."))}</strong>{property.negotiable && <small>मूल्यमा छलफल गर्न सकिने</small>}</div>
-            <span>{toNepaliDigits(property.roadAccessFt)} फिट बाटो</span>
+            <div><strong>{formatPropertyPrice(property.priceNpr, language)}</strong>{property.negotiable && <small>{copy.negotiable}</small>}</div>
+            <span>{formatLocalizedNumber(property.roadAccessFt, language)} {copy.road}</span>
           </div>
         </div>
       </Link>

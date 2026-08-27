@@ -2,39 +2,25 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight, ListFilter, MapPinned, Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ListFilter, MapPinned, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { PropertyCard } from "@/components/properties/property-card";
+import {
+  PropertySearchAutocomplete,
+  type PropertySearchSuggestion,
+} from "@/components/properties/property-search-autocomplete";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useLanguage, useSiteCopy } from "@/components/providers/language-provider";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import { formatLocalizedNumber } from "@/lib/format";
+import { getLocalizedProperty, localizePlace } from "@/lib/property-localization";
 import type { AreaSystem, Property, PropertyType } from "@/types/property";
 
 const PAGE_SIZE = 6;
-const priceOptions = [
-  { value: "1000000000", label: "जुनसुकै मूल्य" },
-  { value: "10000000", label: "रु. १ करोडसम्म" },
-  { value: "25000000", label: "रु. २.५ करोडसम्म" },
-  { value: "50000000", label: "रु. ५ करोडसम्म" },
-  { value: "75000000", label: "रु. ७.५ करोडसम्म" },
-  { value: "5000000", label: "रु. ५० लाखभन्दा कम" },
-];
-
-const districtLabels: Record<string, string> = {
-  Kathmandu: "काठमाडौं",
-  Lalitpur: "ललितपुर",
-  Chitwan: "चितवन",
-  Sunsari: "सुनसरी",
-  Kaski: "कास्की",
-  Morang: "मोरङ",
-};
-
-const nepaliNumber = new Intl.NumberFormat("ne-NP");
-
 function buildPropertiesUrl(type: "all" | PropertyType, page = 1, includeAnchor = true) {
   const params = new URLSearchParams();
   if (type !== "all") params.set("type", type);
@@ -43,30 +29,55 @@ function buildPropertiesUrl(type: "all" | PropertyType, page = 1, includeAnchor 
   return `${queryString ? `/?${queryString}` : "/"}${includeAnchor ? "#properties" : ""}`;
 }
 
-export function PropertyExplorer({ properties, districts }: { properties: Property[]; districts: string[] }) {
+export function PropertyExplorer({ properties, localities }: { properties: Property[]; localities: string[] }) {
+  const { language } = useLanguage();
+  const copy = useSiteCopy().explorer;
+  const priceOptions = copy.priceOptions.map(([value, label]) => ({ value, label }));
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedType = searchParams.get("type");
   const type: "all" | PropertyType = requestedType === "house" || requestedType === "land" ? requestedType : "all";
-  const [district, setDistrict] = useState("all");
+  const [locality, setLocality] = useState("all");
   const [maxPrice, setMaxPrice] = useState(1_000_000_000);
   const [areaSystem, setAreaSystem] = useState<"all" | AreaSystem>("all");
   const [query, setQuery] = useState("");
   const requestedPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
 
+  const searchSuggestions = useMemo<PropertySearchSuggestion[]>(
+    () => [
+      ...localities.map((item) => ({
+        value: item,
+        label: localizePlace(item, language),
+        description: `${localizePlace(item, language)} · ${localizePlace("Kathmandu", language)}`,
+        kind: "location" as const,
+      })),
+      ...properties.map((property) => {
+        const localized = getLocalizedProperty(property, language);
+        return {
+          value: localized.title,
+          label: localized.title,
+          description: `${property.type === "house" ? copy.house : copy.land} · ${localizePlace(property.location.locality, language)}`,
+          kind: "property" as const,
+        };
+      }),
+    ],
+    [copy.house, copy.land, language, localities, properties],
+  );
+
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
     return properties.filter((property) => {
-      const haystack = `${property.title} ${property.location.locality} ${property.location.district}`.toLowerCase();
+      const localized = getLocalizedProperty(property, language);
+      const haystack = `${property.title} ${localized.title} ${property.location.locality} ${localizePlace(property.location.locality, "ne")} ${property.location.municipality} ${property.location.district}`.toLowerCase();
       return (
         (type === "all" || property.type === type) &&
-        (district === "all" || property.location.district === district) &&
+        (locality === "all" || property.location.locality === locality) &&
         (areaSystem === "all" || property.area.system === areaSystem) &&
         property.priceNpr <= maxPrice &&
         (!term || haystack.includes(term))
       );
     });
-  }, [areaSystem, district, maxPrice, properties, query, type]);
+  }, [areaSystem, language, locality, maxPrice, properties, query, type]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Number.isFinite(requestedPage) ? Math.min(Math.max(requestedPage, 1), pageCount) : 1;
@@ -77,11 +88,11 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
 
   const resetFilters = useCallback(() => {
     router.replace(buildPropertiesUrl("all"), { scroll: false });
-    setDistrict("all");
+    setLocality("all");
     setMaxPrice(1_000_000_000);
     setAreaSystem("all");
     setQuery("");
-  }, [router]);
+  }, [router, setAreaSystem, setLocality, setMaxPrice, setQuery]);
 
   const selectPropertyType = useCallback((value: "all" | PropertyType) => {
     router.replace(buildPropertiesUrl(value), { scroll: false });
@@ -90,6 +101,11 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
   const resetPagination = useCallback(() => {
     if (currentPage > 1) router.replace(buildPropertiesUrl(type), { scroll: false });
   }, [currentPage, router, type]);
+
+  const updateQuery = useCallback((value: string) => {
+    setQuery(value);
+    resetPagination();
+  }, [resetPagination]);
 
   const goToPage = useCallback((nextPage: number) => {
     router.replace(buildPropertiesUrl(type, nextPage, false), { scroll: false });
@@ -114,12 +130,12 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
       <div className="site-shell">
         <div className="section-heading property-heading">
           <div className="property-heading-copy">
-            <p className="eyebrow"><Sparkles aria-hidden="true" /> तपाईंका लागि छानिएका सम्पत्ति</p>
-            <h2 id="properties-title">नेपालभरिका उत्कृष्ट <em>घर-जग्गा</em></h2>
+            <p className="eyebrow"><Sparkles aria-hidden="true" /> {copy.eyebrow}</p>
+            <h2 id="properties-title">{copy.titleLead} <em>{copy.titleEmphasis}</em></h2>
           </div>
           <div className="property-heading-note">
             <span><MapPinned aria-hidden="true" /></span>
-            <p><strong>{nepaliNumber.format(districts.length)} जिल्ला</strong>मा स्पष्ट विवरण, स्थानीय मापन र उपयोगी जानकारीसहितका सम्पत्ति।</p>
+            <p><strong>{copy.areaSummary(formatLocalizedNumber(localities.length, language))}</strong> {copy.summary}</p>
           </div>
         </div>
 
@@ -127,9 +143,9 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
           <div className="discovery-topline">
             <div>
               <ListFilter aria-hidden="true" />
-              <span>आफ्नो आवश्यकता अनुसार खोज्नुहोस्</span>
+              <span>{copy.prompt}</span>
             </div>
-            <div className="property-tabs" role="tablist" aria-label="सम्पत्तिको प्रकार">
+            <div className="property-tabs" role="tablist" aria-label={copy.typeLabel}>
               {(["all", "house", "land"] as const).map((value) => (
                 <button
                   key={value}
@@ -138,50 +154,50 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
                   className={type === value ? "active" : ""}
                   onClick={() => selectPropertyType(value)}
                 >
-                  {value === "all" ? "सबै सम्पत्ति" : value === "house" ? "घर" : "जग्गा"}
+                  {value === "all" ? copy.allProperties : value === "house" ? copy.house : copy.land}
                 </button>
               ))}
             </div>
           </div>
 
           <div className="filter-panel">
-            <label className="search-field">
-              <span className="sr-only">ठाउँ वा सम्पत्तिको नाम खोज्नुहोस्</span>
-              <Search aria-hidden="true" />
-              <Input value={query} onChange={(event) => { setQuery(event.target.value); resetPagination(); }} placeholder="ठाउँ वा सम्पत्ति खोज्नुहोस्" />
-            </label>
-            <Select value={district} onValueChange={(value) => { setDistrict(value ?? "all"); resetPagination(); }}>
+            <PropertySearchAutocomplete
+              value={query}
+              suggestions={searchSuggestions}
+              onValueChange={updateQuery}
+              copy={{ label: copy.searchLabel, placeholder: copy.searchPlaceholder, suggestionsLabel: copy.suggestionsLabel, suggestionsHeading: copy.suggestionsHeading }}
+            />
+            <Select value={locality} onValueChange={(value) => { setLocality(value ?? "all"); resetPagination(); }}>
               <SelectTrigger className="filter-select">
-                <span>{district === "all" ? "सबै स्थान" : districtLabels[district] ?? district}</span>
+                <span>{locality === "all" ? copy.allAreas : localizePlace(locality, language)}</span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">सबै स्थान</SelectItem>
-                {districts.map((item) => <SelectItem key={item} value={item}>{districtLabels[item] ?? item}</SelectItem>)}
+                <SelectItem value="all">{copy.allAreas}</SelectItem>
+                {localities.map((item) => <SelectItem key={item} value={item}>{localizePlace(item, language)}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={String(maxPrice)} onValueChange={(value) => { setMaxPrice(Number(value)); resetPagination(); }}>
               <SelectTrigger className="filter-select">
-                <span>{priceOptions.find((option) => Number(option.value) === maxPrice)?.label ?? "जुनसुकै मूल्य"}</span>
+                <span>{priceOptions.find((option) => Number(option.value) === maxPrice)?.label ?? copy.anyPrice}</span>
               </SelectTrigger>
               <SelectContent>{priceOptions.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
             </Select>
             <Select value={areaSystem} onValueChange={(value) => { setAreaSystem((value ?? "all") as "all" | AreaSystem); resetPagination(); }}>
               <SelectTrigger className="filter-select">
-                <span>{areaSystem === "all" ? "जुनसुकै मापन" : areaSystem === "hill" ? "रोपनी / आना" : "बिघा / कट्ठा / धुर"}</span>
+                <span>{areaSystem === "all" ? copy.anyMeasurement : copy.hillMeasurement}</span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">जुनसुकै मापन</SelectItem>
-                <SelectItem value="hill">रोपनी / आना</SelectItem>
-                <SelectItem value="terai">बिघा / कट्ठा / धुर</SelectItem>
+                <SelectItem value="all">{copy.anyMeasurement}</SelectItem>
+                <SelectItem value="hill">{copy.hillMeasurement}</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" className="reset-button" onClick={resetFilters}><X /> फिल्टर हटाउनुहोस्</Button>
+            <Button variant="outline" className="reset-button" onClick={resetFilters}><X /> {copy.reset}</Button>
           </div>
         </div>
 
         <div className="results-meta">
-          <span><SlidersHorizontal aria-hidden="true" /> {nepaliNumber.format(filtered.length)} वटा सम्पत्ति भेटिए</span>
-          <span>पृष्ठ {nepaliNumber.format(currentPage)} / {nepaliNumber.format(pageCount)}</span>
+          <span><SlidersHorizontal aria-hidden="true" /> {copy.found(formatLocalizedNumber(filtered.length, language))}</span>
+          <span>{copy.page(formatLocalizedNumber(currentPage, language), formatLocalizedNumber(pageCount, language))}</span>
         </div>
 
         {visible.length ? (
@@ -190,14 +206,14 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
           </div>
         ) : (
           <div className="empty-state">
-            <h3>ठ्याक्कै मिल्ने सम्पत्ति भेटिएन।</h3>
-            <p>स्थान वा मूल्यको दायरा फराकिलो बनाएर फेरि खोज्नुहोस्।</p>
-            <Button onClick={resetFilters}>सबै फिल्टर हटाउनुहोस्</Button>
+            <h3>{copy.emptyTitle}</h3>
+            <p>{copy.emptyCopy}</p>
+            <Button onClick={resetFilters}>{copy.resetAll}</Button>
           </div>
         )}
 
-        <nav className="pagination" aria-label="सम्पत्तिका पृष्ठहरू">
-          <Button className="pagination-nav" variant="ghost" disabled={currentPage === 1} onClick={() => goToPage(currentPage - 1)} aria-label="अघिल्लो पृष्ठ"><ChevronLeft /><span className="pagination-label">अघिल्लो</span></Button>
+        <nav className="pagination" aria-label={copy.pagesLabel}>
+          <Button className="pagination-nav" variant="ghost" disabled={currentPage === 1} onClick={() => goToPage(currentPage - 1)} aria-label={copy.previous}><ChevronLeft /><span className="pagination-label">{copy.previous}</span></Button>
           <div className="pagination-pages">
           {Array.from({ length: pageCount }, (_, index) => index + 1).map((number) => (
             <Button
@@ -206,14 +222,14 @@ export function PropertyExplorer({ properties, districts }: { properties: Proper
               variant="ghost"
               size="icon-lg"
               onClick={() => goToPage(number)}
-              aria-label={`पृष्ठ ${nepaliNumber.format(number)}`}
+              aria-label={copy.pageLabel(formatLocalizedNumber(number, language))}
               aria-current={currentPage === number ? "page" : undefined}
             >
-              {nepaliNumber.format(number)}
+              {formatLocalizedNumber(number, language)}
             </Button>
           ))}
           </div>
-          <Button className="pagination-nav" variant="ghost" disabled={currentPage === pageCount} onClick={() => goToPage(currentPage + 1)} aria-label="अर्को पृष्ठ"><span className="pagination-label">अर्को</span><ChevronRight /></Button>
+          <Button className="pagination-nav" variant="ghost" disabled={currentPage === pageCount} onClick={() => goToPage(currentPage + 1)} aria-label={copy.next}><span className="pagination-label">{copy.next}</span><ChevronRight /></Button>
         </nav>
       </div>
     </section>

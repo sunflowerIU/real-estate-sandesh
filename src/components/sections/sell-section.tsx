@@ -1,29 +1,14 @@
-import { ArrowDownRight, Camera, FileCheck2, Handshake } from "lucide-react";
-import { Reveal } from "@/components/motion/reveal";
-import { SellPropertyForm } from "@/components/sell/sell-property-form";
+"use client";
 
-const steps = [
-  {
-    icon: FileCheck2,
-    number: "०१",
-    title: "आवश्यक जानकारी दिनुहोस्",
-    copy: "सम्पत्तिको प्रकार, क्षेत्रफल, ठेगाना र अपेक्षित मूल्य। / Property type, area, location and price.",
-  },
-  {
-    icon: Camera,
-    number: "०२",
-    title: "सँगै समीक्षा गरौँ",
-    copy: "कागजात, फोटो र बजारको अवस्था स्पष्ट गर्छौँ। / We review documents, photos and market context.",
-  },
-  {
-    icon: Handshake,
-    number: "०३",
-    title: "गम्भीर खरिदकर्तासँग भेट्नुहोस्",
-    copy: "उपयुक्त सोधपुछ र योजनाबद्ध भ्रमण। / Qualified enquiries and planned visits.",
-  },
-];
+import { ArrowDownRight, BadgePlus, Camera, FileCheck2, Handshake, Mail } from "lucide-react";
+import { Reveal } from "@/components/motion/reveal";
+import { useSiteCopy } from "@/components/providers/language-provider";
+import { SellPropertyDialogTrigger } from "@/components/sell/sell-property-dialog";
+
+const stepIcons = [FileCheck2, Camera, Handshake];
 
 export function SellSection() {
+  const copy = useSiteCopy().sell;
   return (
     <section
       className="section sell-section"
@@ -33,48 +18,45 @@ export function SellSection() {
       <div className="site-shell sell-layout">
         <Reveal className="sell-copy">
           <p className="eyebrow eyebrow-light">
-            <ArrowDownRight aria-hidden="true" /> विश्वासका साथ बेच्नुहोस् /
-            Sell with confidence
+            <ArrowDownRight aria-hidden="true" /> {copy.eyebrow}
           </p>
           <h2 id="sell-title">
-            तपाईंको सम्पत्तिको आफ्नै कथा छ।
+            {copy.titleLead}
             <br />
-            <em>त्यो कथा राम्रोसँग भनौ।</em>
+            <em>{copy.titleEmphasis}</em>
           </h2>
-          <p>
-            आधारभूत जानकारीबाट सुरु गर्नुहोस्। हामी स्पष्ट र विश्वासिलो सूची
-            तयार गर्न सहयोग गर्छौँ।
-            <br />
-            <span className="english-support">
-              Start with the essentials. We’ll help create a clear listing
-              serious buyers can trust.
-            </span>
-          </p>
+          <p>{copy.copy}</p>
           <div className="sell-steps">
-            {steps.map((step) => (
-              <div className="sell-step" key={step.number}>
+            {copy.steps.map(([number, title, description], index) => {
+              const Icon = stepIcons[index];
+              return <div className="sell-step" key={number}>
                 <span>
-                  <step.icon aria-hidden="true" />
+                  <Icon aria-hidden="true" />
                 </span>
                 <div>
-                  <small>{step.number}</small>
-                  <strong>{step.title}</strong>
-                  <p>{step.copy}</p>
+                  <small>{number}</small>
+                  <strong>{title}</strong>
+                  <p>{description}</p>
                 </div>
               </div>
-            ))}
+            })}
           </div>
         </Reveal>
-        <Reveal className="sell-form-card" delay={0.15}>
-          <div className="form-card-heading">
-            <span>निःशुल्क सूची समीक्षा / Free listing review</span>
-            <h3>आफ्नो सम्पत्तिबारे बताउनुहोस्</h3>
-            <p>
-              Tell us about your property · सामान्यतया दुई मिनेटभन्दा कम समय
-              लाग्छ। / Usually under two minutes.
-            </p>
+        <Reveal className="sell-cta-card" delay={0.15}>
+          <span className="sell-cta-icon" aria-hidden="true">
+            <BadgePlus />
+          </span>
+          <div className="sell-cta-copy">
+            <span>{copy.review}</span>
+            <h3>{copy.cardTitle}</h3>
+            <p>{copy.cardCopy}</p>
           </div>
-          <SellPropertyForm />
+          <SellPropertyDialogTrigger className="button button-accent sell-modal-trigger">
+            {copy.send}
+          </SellPropertyDialogTrigger>
+          <small className="sell-cta-note">
+            <Mail aria-hidden="true" /> {copy.note}
+          </small>
         </Reveal>
       </div>
     </section>

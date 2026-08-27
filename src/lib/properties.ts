@@ -11,6 +11,6 @@ export function getPropertyBySlug(slug: string): Property | undefined {
   return properties.find((property) => property.slug === slug);
 }
 
-export function getDistricts(): string[] {
-  return [...new Set(properties.map((property) => property.location.district))].sort();
+export function getLocalities(): string[] {
+  return [...new Set(properties.map((property) => property.location.locality))].sort();
 }

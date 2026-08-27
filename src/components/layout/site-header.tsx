@@ -10,6 +10,9 @@ import {
   Search,
 } from "lucide-react";
 import { Brand } from "@/components/layout/brand";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { useLanguage } from "@/components/providers/language-provider";
+import { SellPropertyDialogTrigger } from "@/components/sell/sell-property-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -21,44 +24,55 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { siteConfig } from "@/config/site";
+import { navigationCopy } from "@/i18n/navigation";
 
 const mobileNav = [
   {
-    label: "सम्पत्ति खोज्नुहोस्",
-    description: "सबै घर-जग्गा हेर्नुहोस्",
+    key: "buy",
     href: "/#properties",
     icon: Search,
   },
   {
-    label: "घरहरू",
-    description: "बिक्रीका उत्कृष्ट घरहरू",
+    key: "houses",
     href: "/?type=house#property-filters",
     icon: Building2,
   },
   {
-    label: "जग्गाहरू",
-    description: "नेपालभरिका जग्गाहरू",
+    key: "land",
     href: "/?type=land#property-filters",
     icon: LandPlot,
   },
 ] as const;
 
 export function SiteHeader() {
+  const { language } = useLanguage();
+  const copy = navigationCopy[language];
+
   return (
     <header className="site-header">
       <div className="site-shell header-inner">
         <Brand />
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {siteConfig.nav.map((item) => (
-            <Link key={item.label} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
+        <nav className="desktop-nav" aria-label={copy.navigationLabel}>
+          {siteConfig.nav.map((item) =>
+            item.href === "/#sell" ? (
+              <SellPropertyDialogTrigger
+                className="nav-dialog-trigger"
+                key={item.key}
+              >
+                {copy[item.key]}
+              </SellPropertyDialogTrigger>
+            ) : (
+              <Link key={item.key} href={item.href}>
+                {copy[item.key]}
+              </Link>
+            ),
+          )}
+          <LanguageSwitcher className="desktop-language-switcher" />
         </nav>
         <div className="header-actions">
-          <Link className="button button-primary header-cta" href="/#sell">
-            आफ्नो सम्पति बेच्नुहोस्
-          </Link>
+          <SellPropertyDialogTrigger className="button button-primary header-cta">
+            {copy.listProperty}
+          </SellPropertyDialogTrigger>
           <Sheet>
             <SheetTrigger
               render={
@@ -70,23 +84,24 @@ export function SiteHeader() {
               }
             >
               <Menu aria-hidden="true" />
-              <span className="sr-only">Open navigation</span>
+              <span className="sr-only">{copy.openMenu}</span>
             </SheetTrigger>
             <SheetContent className="mobile-sheet">
               <div className="mobile-sheet-brand">
                 <Brand />
-                <span>मेनु</span>
+                <span>{copy.menu}</span>
               </div>
               <SheetHeader className="mobile-sheet-header">
-                <SheetTitle className="sr-only">घरजग्गा मेनु</SheetTitle>
+                <SheetTitle className="sr-only">{copy.menuTitle}</SheetTitle>
                 <SheetDescription>
-                  नेपालभरि आफ्नो लागि सही घर वा जग्गा खोज्नुहोस्।
+                  {copy.menuDescription}
                 </SheetDescription>
+                <LanguageSwitcher className="mobile-language-switcher" />
               </SheetHeader>
-              <nav className="mobile-nav" aria-label="मोबाइल नेभिगेसन">
+              <nav className="mobile-nav" aria-label={copy.mobileNavigationLabel}>
                 {mobileNav.map((item) => (
                   <SheetClose
-                    key={item.label}
+                    key={item.key}
                     render={
                       <Link className="mobile-nav-link" href={item.href} />
                     }
@@ -95,8 +110,8 @@ export function SiteHeader() {
                       <item.icon aria-hidden="true" />
                     </span>
                     <span className="mobile-nav-copy">
-                      <strong>{item.label}</strong>
-                      <small>{item.description}</small>
+                      <strong>{copy[item.key]}</strong>
+                      <small>{copy.mobile[item.key]}</small>
                     </span>
                     <ArrowUpRight
                       className="mobile-nav-arrow"
@@ -106,16 +121,15 @@ export function SiteHeader() {
                 ))}
               </nav>
               <div className="mobile-sheet-footer">
-                <p>आफ्नो सम्पत्ति बेच्ने सोचमा हुनुहुन्छ?</p>
+                <p>{copy.sellPrompt}</p>
                 <SheetClose
                   render={
-                    <Link
+                    <SellPropertyDialogTrigger
                       className="button button-primary mobile-sheet-cta"
-                      href="/#sell"
                     />
                   }
                 >
-                  <BadgePlus aria-hidden="true" /> आफ्नो सम्पति बेच्नुहोस्
+                  <BadgePlus aria-hidden="true" /> {copy.listProperty}
                 </SheetClose>
               </div>
             </SheetContent>

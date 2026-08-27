@@ -4,9 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, BadgeCheck, Home, MapPin } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { SellPropertyDialogTrigger } from "@/components/sell/sell-property-dialog";
+import { useSiteCopy } from "@/components/providers/language-provider";
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const copy = useSiteCopy().hero;
   const initial = reduceMotion ? false : { opacity: 0, y: 24 };
 
   return (
@@ -14,7 +17,7 @@ export function Hero() {
       <Image
         className="hero-image"
         src="/house/hero-kathmandu.webp"
-        alt="सूर्योदयको समयमा काठमाडौं उपत्यका हेर्दै गरेको आधुनिक घर"
+        alt={copy.imageAlt}
         fill
         priority
         sizes="100vw"
@@ -29,22 +32,21 @@ export function Hero() {
           transition={{ duration: 0.7 }}
         >
           <p className="eyebrow eyebrow-light">
-            <MapPin aria-hidden="true" /> नेपालभरिका घर-जग्गा
+            <MapPin aria-hidden="true" /> {copy.eyebrow}
           </p>
           <h1 id="hero-title">
-            तपाईंका लागि <em>सही घर जग्गा खोज्नुहोस्।</em>
+            {copy.titleLead} <em>{copy.titleEmphasis}</em>
           </h1>
           <p className="hero-copy">
-            प्रमाणित घर र जग्गा, तपाईंले बुझ्ने स्थानीय मापनमा—हरेक चरणमा उपयोगी
-            जानकारीसहित।
+            {copy.copy}
           </p>
           <div className="hero-actions">
             <Link className="button button-accent" href="#properties">
-              सम्पत्ति हेर्नुहोस् <ArrowDown aria-hidden="true" />
+              {copy.browse} <ArrowDown aria-hidden="true" />
             </Link>
-            <Link className="button button-ghost-light" href="#sell">
-              हामीसँग बेच्नुहोस्
-            </Link>
+            <SellPropertyDialogTrigger className="button button-ghost-light">
+              {copy.sell}
+            </SellPropertyDialogTrigger>
           </div>
         </motion.div>
         <motion.aside
@@ -57,24 +59,24 @@ export function Hero() {
             <Home aria-hidden="true" />
           </span>
           <div>
-            <small>भैँसेपाटीको विशेष सम्पत्ति</small>
-            <strong>६ आना २ पैसा</strong>
+            <small>{copy.featured}</small>
+            <strong>{copy.area}</strong>
             <span>
-              <BadgeCheck aria-hidden="true" /> कागजात प्रमाणित
+              <BadgeCheck aria-hidden="true" /> {copy.verified}
             </span>
           </div>
         </motion.aside>
       </div>
-      <div className="hero-marquee" aria-label="सम्पत्ति उपलब्ध क्षेत्रहरू">
-        <span>काठमाडौं</span>
+      <div className="hero-marquee" aria-label={copy.areasLabel}>
+        <span>{copy.eyebrow.includes("काठमाडौं") ? "बुढानीलकण्ठ" : "Budhanilkantha"}</span>
         <i />
-        <span>ललितपुर</span>
+        <span>{copy.eyebrow.includes("काठमाडौं") ? "बालुवाटार" : "Baluwatar"}</span>
         <i />
-        <span>पोखरा</span>
+        <span>{copy.eyebrow.includes("काठमाडौं") ? "महाराजगञ्ज" : "Maharajgunj"}</span>
         <i />
-        <span>चितवन</span>
+        <span>{copy.eyebrow.includes("काठमाडौं") ? "टोखा" : "Tokha"}</span>
         <i />
-        <span>विराटनगर</span>
+        <span>{copy.eyebrow.includes("काठमाडौं") ? "कीर्तिपुर" : "Kirtipur"}</span>
       </div>
     </section>
   );
